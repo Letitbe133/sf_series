@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Coming next...</title>
+    <style>
+      body {
+        background: #000;
+        color: #fff;
+        font-family: Arial, Helvetica, sans-serif;
+      }
+      h1 {
+        color: #000;
+        font-size: 5rem;
+        font-weight: 700;
+        text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff,
+          1px 1px 0 #fff;
+      }
+      h2 {
+        font-size: 3rem;
+        font-weight: 100;
+        text-decoration: underline dashed #fff;
+      }
+      h3 {
+        font-size: 2rem;
+      }
+      p {
+        margin-left: 30px;
+      }
+      section {
+        margin: 100px 0;
+      }
+      blockquote footer {
+        opacity: 0.4;
+      }
+      a {
+        color: #fff;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Symfony Series #2</h1>
+    <section>
+      <h2>In the previous episode...</h2>
+      <p>Here's what you saw in the last episode of this Symfony Series :</p>
+      <h3>The basic file structure of a Symfony project</h3>
+      <p>The main directories you'll be working with are :</p>
+      <ul>
+        <li><b>/config</b> : that holds the config files for your project</li>
+        <li>
+          <b>/public</b> : that holds your <b>assets</b> and your
+          <b>Front Controller</b>
+        </li>
+        <li>
+          <b>/src</b> : that holds your
+          <ul>
+            <li>Controllers</li>
+            <li>Entities</li>
+            <li>Repositories</li>
+            <li>Managers</li>
+            <li>Migrations</li>
+          </ul>
+        </li>
+        <li><b>/templates</b> : that holds your templates</li>
+      </ul>
+      <h3>Creating your first route</h3>
+      <p>Her's what you did :</p>
+      <ul>
+        <li>
+          Create a route in the <b>routes.yaml</b> file inside the
+          <b>/config</b> directory
+        </li>
+        <li>
+          Associate this route with the basic <b>TemplateController</b> provided
+          by Symfony
+        </li>
+        <li>Associate this route with a static HTML template</li>
+        <li>Create the corresponding template in <b>/templates</b></li>
+      </ul>
+      <h3>Rendering your first static HTML page</h3>
+      <p>
+        By now, you should be able to display the corresponding page when you
+        type in a path in the url of your brower
+      </p>
+      <p>Ex : /about should display the about.html template</p>
+    </section>
+    <section>
+      <h2>Moving on with Controllers and Templates</h2>
+      <p>
+        Remember I told you there was an other way for configuring route ?<br />
+        We are going to deal with that right now
+      </p>
+      <h3>Configuring routes with the <b>Annotation</b> package</h3>
+      <h4>Step #1</h4>
+      <p>
+        Comment <b>all</b> the content of your <b>routes.yaml</b> file <br />
+        We don't need this anymore
+      </p>
+      <h4>Step #2</h4>
+      <p>
+        Create a new controller file in your <b>/src/Controller</b> that will be
+        responsible for rendering the template matching your route <br />
+        Ex : if your route is "/" your controller name could be
+        <b>HomeController.php</b>
+      </p>
+      <p>Remember your controller is a PHP class</p>
+      <h4>Step #3</h4>
+      <p>Give your controller a namespace</p>
+      <p>
+        All controllers in Symfony should be under the global
+        <b>App\Controller</b> namespace
+      </p>
+      <p>
+        This should be done right before declaring your class <br />
+        Ex : <b>namespace App\Controller;</b>
+      </p>
+      <h4>Step #4</h4>
+      <p>
+        Make sure your controller class extend the Symfony
+        <b>AbstractController</b> class
+      </p>
+      <p>
+        The <b>AbstractController</b> class provides you with methods that will
+        help you easily render templates <br />
+        Ex : <b>class HomeController extends AbstractController</b>
+      </p>
+      <h4>Step #5</h4>
+      <p>
+        When you use as class (as you do with AbstractController) you need to
+        import it first
+      </p>
+      <p>
+        Just after declaring your <b>namespace</b>, import that class using it's
+        own namespace <br />
+        Ex :
+        <b
+          >use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+        </b>
+      </p>
+      <h4>Step #6</h4>
+      <p>
+        Since we will use the <b>Annotation</b> class, we need to import it too
+        <br />
+        Ex : <b>use Symfony\Component\Routing\Annotation\Route; </b>
+      </p>
+      <h4>Step #7</h4>
+      <p>
+        In our controller, you now need to create a <b>public</b> method that
+        will be responsible for rendering your template (that will be created
+        later)
+      </p>
+      <p>Ex : <b>public function show()</b></p>
+      <h4>Step #8</h4>
+      <p>
+        You must tell your controller that the method you just created will be
+        invoked when the matching route is called<br />This is what
+        <b>annotations</b> are made for
+      </p>
+      <p>
+        You declare the route by using <b>doc block</b> which is kind of multi
+        lines comment<br />Inside it we will use the Route annotation syntax
+      </p>
+      <p>
+        Syntax : @Route('/route_to_be_matched', name='route_name') <br />
+        Ex : @Route('/', name='homepage')
+      </p>
+      <p>
+        Your annotation should look likt this : <br />
+        Ex :
+        <pre>
+          <code>
+            /**
+            * @Route('/', name='homepage')
+            */
+          </code>
+        </pre>
+      </p>
+      <p><a href="https://symfony.com/doc/current/routing.html">Routing in Symfony</a></p>
+      <h4>Step #9</h4>
+      <p>
+        Now you must tell your public function what to do when the route is
+        matched
+      </p>
+      <p>
+        For this you will use the <b>render()</b> method of the
+        <b>AbstractController</b> class and return its output
+      </p>
+      <p>
+        Since the <b>render()</b> method is inherited from
+        <b>AbstractController</b> you will have to invoke it with the
+        <b>$this</b> keyword <br />
+        Ex : <b>$this->render()</b>
+      </p>
+      <p>The <b>render()</b> method takes 2 arguments :
+      <ul>
+        <li>The <b>name of the template</b> that will be rendered (this will be a <b>string</b>) : <b>Required</b>
+        </li>
+        <li>The <b>parameters</b> that will be passed to your template (this will be an <b>associative array</b>) : <b>Optional</b></li>
+      </ul>
+      </p>
+      <p>Syntax : <b>return $this->render(name_of_the_template, [...])</b></p>
+      <h4>Step #10</h4>
+      <p>Symfony uses <b>Twig</b> as a templating engine that is already integrated to the framework</p>
+      <p>As a convention in Symfony, your templates should have a <b>.html.twig</b> file extension <br>
+      Ex : <b>home.html.twig</b>
+      </p>
+      <p>You can now create the template for your route <br>
+      It will be a basic HTML file, so feel free to put whatever you want in it
+      </p>
+      <p><a href="https://twig.symfony.com/doc/3.x/">Twig documentation</a></p>
+      <p><a href="https://symfony.com/doc/current/templates.html">Creating and using templates in Symfony</a></p>
+      <h4>Final step</h4>
+      <p>You now must tell your controller to render your template <br>
+      Ex : <b>$this->render('home.html.twig');</b>
+      </p>
+      <p>Notice : since you do not pass parameters to your template, you don't need to pass the optional array mentioned at <b>Step #9</b></p>
+      <p>
+        This is what your controller should look like this : <br>
+        <pre>
+          <code>namespace App\Controller; <br>
+          use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+          use Symfony\Component\Routing\Annotation\Route; <br>
+          class HomeController extends AbstractController
+          { <br>
+            /**
+            * @Route('/', name='homepage')
+            */
+            public function show()
+            {
+              return $this->render('home.html.twig');
+            } <br>
+          }
+          </code>
+        </pre>
+
+      </p>
+      <section>
+        <h2>Next</h2>
+        <h3>Add more routes to your project</h3>
+        <p>At this point, you should be able to create other routes/controllere/templates for different pages you would like to display <br>
+        Ex : /about /contact /blog
+        </p>
+        <p>Try to create new pages that you can navigate to</p>
+      </section>
+    <h1>#BeStrong #HopeThatHelps #<3</h1>
+  </body>
+</html>

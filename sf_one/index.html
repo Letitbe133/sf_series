@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Coming next...</title>
+    <style>
+      body {
+        background: #000;
+        color: #fff;
+        font-family: Arial, Helvetica, sans-serif;
+      }
+      h1 {
+        color: #000;
+        font-size: 5rem;
+        font-weight: 700;
+        text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff,
+          1px 1px 0 #fff;
+      }
+      h2 {
+        font-size: 3rem;
+        font-weight: 100;
+        text-decoration: underline dashed #fff;
+      }
+      h3 {
+        font-size: 2rem;
+      }
+      p {
+        margin-left: 30px;
+      }
+      section {
+        margin: 100px 0;
+      }
+      blockquote footer {
+        opacity: 0.4;
+      }
+      a {
+        color: #fff;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Symfony Series #1</h1>
+    <section>
+      <h2>The file structure</h2>
+      <p>
+        There are 4 main directories in Symfony that we need to care about :
+      </p>
+      <h3>/config</h3>
+      <p>
+        In this directory will live all the config files necessary to run your
+        app
+      </p>
+      <p>Inside you will find a <b>routes.yaml</b> file. Take a look inside</p>
+      <h3>/public</h3>
+      <p>This is the only public entry point to your app.</p>
+      <p>
+        Inside it will live all the files and assets that need to be accessed by
+        the browser
+      </p>
+      <ul>
+        <li>
+          Images and medias
+        </li>
+        <li>
+          Stylesheets
+        </li>
+        <li>
+          Js scripts
+        </li>
+        <li>
+          And an index.php page that will be the <b>Front Controller</b> of your
+          app
+        </li>
+      </ul>
+      <p>
+        The <b>Front Controller</b> will intercept all the requests made to your
+        app
+      </p>
+      <h3>/src</h3>
+      <p>This is your working directory, where you will write your PHP code</p>
+      <p>Inside you will find several directories, amongst them :</p>
+      <ul>
+        <li>
+          /src/Controller : which will contain your <b>controllers</b> classes
+        </li>
+        <li>
+          /src/Entity : which will contain your <b>entities</b>. Remember that
+          entities are classes that will be used by Symfony to create tables in
+          your database
+        </li>
+        <li>
+          /src/Migrations : which will contain the files that keep track of the
+          migrations (or modifications) to the structure of your tables
+        </li>
+        <li>
+          /src/Repository : which will contain the
+          <b>repositories</b> corresponding to your <b>entities</b>. <br />A
+          <b>repository</b>is a class that will help you query your tables and
+          make <b>SELECT</b> requests
+        </li>
+      </ul>
+      <h3>/templates</h3>
+      <p>
+        In this directory will live all the templates (or pages for your app)
+      </p>
+    </section>
+    <section>
+      <h2>The routing</h2>
+      <h3>How does it work ?</h3>
+      <h4>Step #1</h4>
+      <p>
+        The <b>Front Controller</b> of your app will intercept all incoming
+        <b>requests</b> (ex /home, /about, /contact, /wtf)
+      </p>
+      <h4>Step #2</h4>
+      <p>
+        It will look for a matching route for this request, for example in the
+        <b>/config/routes.yaml</b> file and will call the associated
+        <b>controller</b>
+      </p>
+      <h4>Step #3</h4>
+      <p>
+        The controller that was called will send a response and display the
+        corresponding template that it will fetch in the
+        <b>/templates</b> directory
+      </p>
+    </section>
+    <section>
+      <h2>Creating your first route</h2>
+      <h3>#KeepItSimple</h3>
+      <p>
+        If you only render static pages (pages that will not need to display
+        dynamic data) you won't even need to create your own
+        <b>controller</b> as Symfony provides a <b>TemplateController</b> class
+        that works out of the box
+      </p>
+      <p>
+        All you have to do is add your route in the routes config file,
+        associate the controller and specify the name of the template to render
+        (that can be a html, php or twig file)
+      </p>
+      <p>
+        <a
+          href="https://symfony.com/doc/4.1/templating/render_without_controller.html"
+          >More resources here</a
+        >
+      </p>
+      <h3>#OneStepBeyond</h3>
+      <p>
+        One other way is to create your route and specify a custom controller
+        and method (remember a controller is a php class that has properties and
+        methods)
+      </p>
+      <p>
+        Take a look in <b>/config/routes.yaml</b> you will find and example here
+      </p>
+      <p>
+        Next step is to create your <b>controller</b> and create inside it the
+        specified method that will return a <b>Response</b> object containing
+        the corresponding template (.html, .php, .twig)
+      </p>
+      <p>
+        <a
+          href="https://symfony.com/doc/4.1/page_creation.html#creating-a-page-route-and-controller"
+          >More on this topic here</a
+        >
+      </p>
+      <p>
+        In this example, you will note that there is an alternate way to
+        configure routes. For that you will need to install another package via
+        <b>composer</b>
+      </p>
+    </section>
+    <section>
+      <h2>Tips</h2>
+      <h3>#KeepItSimple : start basic and build on it</h3>
+      <h3>
+        #Remember : Symfony is built with PHP. That means that you can use all
+        PHP methods in your PHP files. You might for example want to create an
+        <b>includes</b> folder in your <b>/templates</b> directory to store your
+        nav bar and include it in your page templates ;)
+      </h3>
+      <h3>
+        #ClassesEveywhere : controllers are classes (group them under the
+        APP\Controller namespace), repositories are classes, entities too and
+        much more
+      </h3>
+    </section>
+    <h1>#BeStrong #HopeThatHelps #<3</h1>
+  </body>
+</html>

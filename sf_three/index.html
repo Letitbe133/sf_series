@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Coming next...</title>
+    <style>
+      body {
+        background: #000;
+        color: #fff;
+        font-family: Arial, Helvetica, sans-serif;
+      }
+      h1 {
+        color: #000;
+        font-size: 5rem;
+        font-weight: 700;
+        text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff,
+          1px 1px 0 #fff;
+      }
+      h2 {
+        font-size: 3rem;
+        font-weight: 100;
+        text-decoration: underline dashed #fff;
+      }
+      h3 {
+        font-size: 2rem;
+      }
+      p {
+        margin-left: 30px;
+      }
+      section {
+        margin: 100px 0;
+      }
+      blockquote footer {
+        opacity: 0.4;
+      }
+      a {
+        color: #fff;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Symfony Series #3</h1>
+    <section>
+      <h2>In the previous episode...</h2>
+      <p>Here's what you saw in the last episode of this Symfony Series :</p>
+      <h3>Create your <b>controllers</b></h3>
+      <p>Instead of using the default <b>TemplateController</b> provided by Symfony, you created your own controllers to render specific templates matching a route</p>
+      <p>Remember <b>controllers</b> are PHP classes with <b>properties</b> and <b>methods</b>
+    </p>
+      <h3>Define routes by using the <b>Annotation</b> class</h3>
+      <p>To use <b>Annotation</b> remember that you first need to use the correct namespace <br>
+        <pre>
+          <code>
+            use Symfony\Component\Routing\Annotation\Route;
+          </code>
+        </pre>
+      </p>
+      <p>Your route should be defined just above the method that will be executed when the route is matched : <br>
+        <pre>
+          <code>
+            /**
+            * @Route("/", name="homepage")
+            */
+            public function home()
+            {
+                return $this->render('home.html.twig');
+            }
+          </code>
+        </pre>
+      </p>
+      <h3>Create and render your template</h3>
+      <p>
+        For that purpose, you need to create the <b>.html.twig</b> template your controller should render, in the <b>/templates</b> directory <br>
+        Ex : home.html.twig
+      </p>
+    </section>
+    <section>
+      <h2>Moving on with template inheritance</h2>
+      <p>
+        By now you should have different templates each matching a route<br />
+        Nice ! But suppose you wish to create a navbar to navigate through your app pages, you would have to add it to every template. Same for CSS or javascript resources. Kind of tedious right ?
+      </p>
+      <p>That's where the <b>base.html.twig</b> template comes in handy. It will hold all the elements that need to be shared through your templates</p>
+      <h3>Customize your base template</h3>
+      <p><b>base.html.twig</b> is kind of an HTML basic structure with the usual tags you're used to. <br>
+      But it adds some new stuff : <b>blocks</b>. Blocks are zones in your template where you can add HTML elements (h1, nav link, script, whatever ...)
+      </p>
+      <p>Each block is defined as so : <br>
+      <pre>
+        <code>
+          {% block block_name %}
+            // your HTML goes Here
+          {% endblock %}
+        </code>
+      </pre>
+      </p>
+      <p>In your <b>base.html.twig</b> 4 blocks are already defined :</p>
+      <ul>
+        <li>{% block title %} : contains the title of your page</li>
+        <li>{% block stylesheets %} : contains the links to stylesheets your project needs</li>
+        <li>{% block body %} : that will be tne content of your page</li>
+        <li>{% block javascripts %} : that's where your scripts live</li>
+      </ul>
+      <p>Apart from those predefined blocks, you can create your owns <br>
+      Say for example you want to include a navbar, you could create a navbar block like so :
+      <pre>
+        <code>
+          {% block navbar %}
+            &lt;nav&gt;
+              &lt;ul&gt;
+                &lt;li&gt;&lt;a href="#"&gt;&lt;/a&gt;Home&lt;li&gt;
+                &lt;li&gt;&lt;a href="#"&gt;&lt;/a&gt;About&lt;li&gt;
+                &lt;li&gt;&lt;a href="#"&gt;&lt;/a&gt;Contact&lt;li&gt;
+              &lt;ul&gt;
+            &lt;nav&gt;
+          {% endblock %}
+        </code>
+      </pre>
+      and insert it just before the {% block body %}
+      </p>
+      <p>If you need to include your stylesheet (or a cdn link) or your scripts feel free to do so in the corresponding blocks</p>
+      <h3>Make your templates extend your base</h3>
+      <p>Now that you have a fully set up base template, you can use it in your other templates <br>
+      All you have to do is make them <b>extend</b> or (inherit) <b>base.html.twig</b> <br>
+      Ex : say you have a <b>home.html.twig</b> , all you have to do is add at the very begining of your file :
+      <pre>
+        <code>
+          {% extends "base.html.twig" %}
+        </code>
+      </pre>
+      </p>
+      <p>Now your template will inherit all the blocks defined in your base template</p>
+      <p>&xutri; Remember : if you redefine a block in a <b>child</b> template, it will override the inherited block</p>
+      <p>Say you have a header block in your base.html.twig, if you redefine it in your home.html.twig you will overwite it</p>
+      <p>If you want to customize a block you inherit from, you will have to add the twig <b>parent()</b> method before your content. That will insure that you just append to the block instead of replacing its content.<br>
+      Ex :
+      <pre>
+        <code>
+          {% block header %}
+            {{ parent() }}
+            // your content goes here
+          {% endblock %}
+        </code>
+      </pre>
+      </p>
+      <h3>Create a navbar for your project</h3>
+      <p>As you saw before, since the navbar should be shared through all your pages, it will live in the <b>base.html.twig</b> template</p>
+      <h4>Step #1</h4>
+      <p>
+        Create a {% block navbar %} just before the {% block body %} <br>
+        It should look like so :
+        <pre>
+          <code>
+            {% block navbar %}
+              &lt;nav&gt;
+                &lt;ul&gt;
+                  &lt;li&gt;&lt;a href=""&gt;&lt;/a&gt;Home&lt;li&gt;
+                  &lt;li&gt;&lt;a href=""&gt;&lt;/a&gt;About&lt;li&gt;
+                  &lt;li&gt;&lt;a href=""&gt;&lt;/a&gt;Contact&lt;li&gt;
+                &lt;ul&gt;
+              &lt;nav&gt;
+            {% endblock %}
+          </code>
+        </pre>
+      </p>
+      <p>Leave the <b>href</b> attribute empty for now</p>
+      <p>Of course adapt the nav items to fit to your templates</p>
+      <h4>Step #2</h4>
+      <p>
+        Make sure your templates inherit from <b>base.html.twig</b> and if so, refresh your page in the browser. Your menu should appear at the top
+      </p>
+      <h4>Step #3</h4>
+      <p>Your menu is showing but it's not working right now. Fix that !</p>
+      <p>
+        Typically, you would add a path in your <b>href</b> attributes to the page you want to display, and it sure would work. But...
+      </p>
+      <p>Remember when you declared routes with <b>Annotation</b> ?
+        <pre>
+          <code>
+            /**
+            * @Route("/", name="homepage")
+            */
+          </code>
+        </pre>
+      </p>
+      <p>Here you can see that a path is associated with a name. That means that even is you change the route, say "/home" VS "/", you can still keep the same name to refer to it</p>
+      <p>Fact is you can use the route name in twig to reference your route. That means that even if you modify your route in the controller, you won't have to modify your templates as long as the <b>name</b> remains the same</p>
+      <h4>Step #4</h4>
+      <p>
+        Update your nav links
+      </p>
+      <p>
+        Twig provides you with a <b>path()</b> method that accepts 3 parameters : <br>
+        <pre>
+          <code>
+            {{ path(route_name, route_parameters, relative) }}
+          </code>
+        </pre>
+      </p>
+      <p>route_name <b>(required)</b>: a string containing the route name, ex "homepage" <br>
+        route_parameters <b>(optional)</b>: an associative array containing key/value pairs that can be passed to the template given in the <b>route_name</b> <br>
+        relative <b>(optional)</b>: a boolean (true / false) if the path should be relative or absolute (default)
+      </p>
+      <p>Resource : <a href="https://symfony.com/doc/current/templates.html#templates-link-to-pages">creating links in Twig templates</a></p>
+      <p>Your updated navbar should look like this :
+        <pre>
+          <code>
+            {% block navbar %}
+              &lt;nav&gt;
+                &lt;ul&gt;
+                  &lt;li&gt;&lt;a href="{{ path("homepage")}}"&gt;&lt;/a&gt;Home&lt;li&gt;
+                  &lt;li&gt;&lt;a href="{{ path("aboutpage")}}"&gt;&lt;/a&gt;About&lt;li&gt;
+                  &lt;li&gt;&lt;a href="{{ path("contactpage")}}"&gt;&lt;/a&gt;Contact&lt;li&gt;
+                &lt;ul&gt;
+              &lt;nav&gt;
+            {% endblock %}
+          </code>
+        </pre>
+      </p>
+      <p>As always, adapt it to your needs and test it in your browser</p>
+      <h4>Final step</h4>
+      <p>Why not add some style to your navbar ?<br>
+      Remember, since your navbar will appear on every page, you should add your <b>link</b> to the corresponding block of the <b>base.html.twig</b> template
+      </p>
+      <section>
+        <h2>Set up your database</h2>
+        <h3>Configure your connection</h3>
+        <p>To set up Symfony to work with a database, you must first provide it with connection credentials <br>
+        Remember PDO ? <br>
+        <pre>
+          <code>
+            new PDO("mysql:host=localhost;db_name=database_name",)
+          </code>
+        </pre>
+      </p>
+      <p>Your database credentials are stored in a PHP constant <b>DATABASE_URL</b> in the <b>.env</b> file located at the root of your project. <br> If you open it, you will find at the bottom a line that looks like so :
+        <pre>
+          <code>
+            # customize this line!
+            DATABASE_URL="mysql://db_user:db_password@127.0.0.1:3306/db_name"
+          </code>
+        </pre>
+      </p>
+      <p>Since your project is running locally, you will connect to your local <b>mysql</b> server. Replace <b>db_user</b> and <b>db_password</b> by your mysql credentials <br>
+      Ex : DATABASE_URL="mysql://root:root@127.0.0.1:3306/db_name" <br>
+      If you connect without password you can omit it <br>
+      Ex : DATABASE_URL="mysql://root:@127.0.0.1:3306/db_name"
+      </p>
+      <p>Next, give your database a name and save the file<br>
+      Ex : DATABASE_URL="mysql://root:@127.0.0.1:3306/my_database"
+      </p>
+      <p>Your connection is now set up, but your database is not created yet. You can check that by connecting to your mysql server (command line or phpmyadmin) and display databases</p>
+      <h3>Create your database</h3>
+      <p>Now that your connection is set up, time to create your database</p>
+      <p>you will use the command line for that to call a command of the <b>Doctrine ORM (Object Relational Mapper)</b></p>
+      <p>In your terminal, type in <br>
+        <pre>
+          <code>
+            php bin/console doctrine:database:create
+          </code>
+        </pre>
+      </p>
+      <p>This will create your database using the name provided in your <b>.env</b> file <br>
+      Check your mysql server for a change, you should find your database here (though empty for now)
+      </p>
+      </section>
+      <section>
+        <h2>Next</h2>
+        <h3>Create your first <b>Entity</b></h3>
+        <p>In the next episode, you will create your first entity, make your first migration and populate your newly created table
+        </p>
+        <p>You will also see the concepts of <b>Repository</b> and <b>Manager</b> to query your entities</p>
+      </section>
+    <h1>#BeStrong #HopeThatHelps #<3</h1>
+  </body>
+</html>

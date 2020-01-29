@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Coming next...</title>
+    <style>
+      body {
+        background: #000;
+        color: #fff;
+        font-family: Arial, Helvetica, sans-serif;
+      }
+      h1 {
+        color: #000;
+        font-size: 5rem;
+        font-weight: 700;
+        text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff,
+          1px 1px 0 #fff;
+      }
+      h2 {
+        font-size: 3rem;
+        font-weight: 100;
+        text-decoration: underline dashed #fff;
+      }
+      h3 {
+        font-size: 2rem;
+      }
+      p {
+        margin-left: 30px;
+      }
+      section {
+        margin: 100px 0;
+      }
+      blockquote footer {
+        opacity: 0.4;
+      }
+      a {
+        color: #fff;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Symfony Series #4</h1>
+    <section>
+      <h2>In the previous episode...</h2>
+      <p>Here's what you saw in the last episode of this Symfony Series :</p>
+      <h3>Customizing your <b>base.html.twig</b> template</h3>
+      <p>You integrated a navbar and a stylesheet that will be available to all other templates in your app</p>
+      <p>You integrated a CSS library to style your project</p>
+      <h3>Create templates that inherit your base template</h3>
+      <p>Remember you can inherit your base template or override it in your child template
+      </p>
+      <p>You just have to make your child template <b>extend</b> your base template like so :
+        <pre>
+          <code>
+            {% extends "base.html.twig" %}
+          </code>
+        </pre>
+      </p>
+      <p>Remember that if you create in your child template a block already existing in your base template, it will replace your parent block !</p>
+      <p>If you wish to add content to a parent block in your child template without replacing it, you will have to use the <b>parent()</b> method at the beginning of your block like so :
+        <pre>
+          <code>
+            {% extends "base.html.twig" %}
+
+            {% block body %}
+              {{ parent() }}
+              // your content goes here
+            {% endblock %}
+          </code>
+        </pre>
+      </p>
+      <h3>Set up your database connection</h3>
+      <p>
+        This is done in the <b>.env</b> file at the root of your project
+      </p>
+      <p>
+        <pre>
+          <code>
+            # customize this line!
+            DATABASE_URL="mysql://db_user:db_password@127.0.0.1:3306/db_name"
+          </code>
+        </pre>
+      </p>
+      <h3>Create your database</h3>
+      <p>You create your database using the provided Symfony command :
+        <pre>
+          <code>
+            php bin/console doctrine:database:create
+          </code>
+        </pre>
+      </p>
+    </section>
+    <section>
+      <h2>Moving on with <b>Entity</b> creation</h2>
+      <h3>Create your first Entity</h3>
+      <p>
+        An <b>Entity</b> is a PHP class that represents your table. No SQL here, just plain PHP
+      </p>
+      <p>Behind the scene, Symfony will use <b>Doctrine</b> which is an ORM to <b>map</b> the properties in this class to an SQL table in your database</p>
+      <p>Let's jump into it !</p>
+      <h4>Step #1</h4>
+      <p>Create your first Entity using the provided Symfony command :
+        <pre>
+          <code>
+            php bin/console make:entity
+          </code>
+        </pre>
+      </p>
+      <p>You will be prompted to give it a name. I will call mine <b>Book</b> choose yours</p>
+      <h4>Setp #2</h4>
+      <p>Next step is to add properties (that will be mapped to <b>fields</b> in your database). <br>
+      Notice that Symfony takes care of the <b>id</b> field so you don't have to add it yourself</p>
+      <p>Properties are the fields that will be created in your database, and of course you will need to specify which kind of data will live inside them</p>
+      <p>Symfony will provide you with a default field type but you can choose your own <br>
+      To know which types are available, just type <b>?</b> when asked</p>
+      <p>I will add very basic fields to mine as so :
+        <pre>
+          <code>
+            title : String
+            description : Text
+            author : String
+            image: String
+          </code>
+        </pre>
+      </p>
+      <h4>Step #3</h4>
+      <p>When you're done with adding properties, just double type enter. <br>
+      Your entity is now created and you can have a look at it here : 
+        <pre>
+          <code>
+            /src/Entity
+          </code>
+        </pre>
+    </p>
+    <p>Inside you will find your entity file. Mine is Book.php <br>
+    Take a look at its structure</p>
+    <p>You will see that it contains all the properties you defined along with <b>getters</b> and <b>setters</b> that will allow you to get their content or modify it</p>
+    <p>You will also notice that Doctrine use <b>Annotations</b> like you saw earlier when creating your routes</p>
+      <h3>Create the corresponding table in your database</h3>
+      <p>At this point, you created your entity class, but your databse is still empty. Go check that !
+      </p>
+      <p>Let's fix that !</p>
+      <h4>Step #1</h4>
+      <p>Symfony uses a sytem of <b>migrations</b> to create your tables
+      </p>
+      <p>What is does behind the scene is read your entity class then map it to an SQL request</p>
+      <p>To create your migration just run :
+        <pre>
+          <code>
+            php bin/console make:migration
+          </code>
+        </pre>
+      </p>
+      <p>Doctrine will scan your entities for any change and if so, it will create an <b>migration</b> file</p>
+      <p>You can have a look at it here :
+        <pre>
+          <code>
+            /src/Migrations
+          </code>
+        </pre>
+      </p>
+      <p>Here you will find real SQL queries. But that's not all</p>
+      <p>Inside it you will find 2 functions :
+        <pre>
+          <code>
+            up() : this function will execute your SQL query whenyou will launch your migration
+            down() : this will cancel what has been done in the up() function
+          </code>
+        </pre>
+      </p>
+      <p>This means that if you make a mistake while creating your entity and make the migration, you will be able to cancel it. This is part of the migration system and is called the <b>rollback</b></p>
+      <h4>Step #2</h4>
+      <p>It's now time to launch your migration. To do so, use the following command :
+        <pre>
+          <code>
+            php bin/console doctrine:migrations:migrate
+          </code>
+        </pre>
+      </p>
+      <p>This will execute your migration and create your table. Go take a look at your database, you should find your newly created table there</p>
+      <h3>Populate your table</h3>
+      <p>Allright you created your table but right now it's empty</p>
+      <p>You could of course create data directly from your SQL server, but it would not be very efficient. Another option is to use the <b>Fixtures</b> class provided by Doctrine.
+      </p>
+      <p><b>You will use this class for development purpose only</b>. This will help you generate easily a great amount of data that will be useful to develop and test your app.</p>
+      <p>To create a <b>Fixture</b> class, you just have to use the following command :
+        <pre>
+          <code>
+            php bin/console make:fixtures
+          </code>
+        </pre>
+      </p>
+      <p>You will be prompted to give a class name, make sure the name is meaningful</p>
+      <p>Since I created a Book entity that I want to populate, I would call my fixture class <b>BookFixtures</b></p>
+      <p>This command will create 2 things :
+        <ul>
+          <li>A new folder called <b>DataFixtures</b> in the <b>/src</b> folder</li>
+          <li>A new PHP class in the <b>/src/DataFixtures folder where you will generate your data</b></li>
+        </ul>
+      </p>
+      <p>It's now time to generate your data.</p>
+      <h4>Step #1</h4>
+      <p>If you take a look at your Fixture class, you'll find inside it a <b>load()</b> method that takes a <b>ObjectManager</b> class</p>
+      <p>The manager in Symfony is responsible for creating and modifying data in your database and you will use 2 of its methods :
+        <ul>
+          <li>persist() : that will prepare the request</li>
+          <li>flush() : that will execute it</li>
+        </ul>
+      </p>
+      <h4>Step #2</h4>
+      <p>Time to create your data</p>
+      <p>Since I want to create books, I will need to :
+        <ul>
+          <li>import my Book entity class</li>
+          <li>create a new instance of Book in my <b>load()</b> method</li>
+          <li>set the values for the different fields created in my entity</li>
+          <p>persist the data</p>
+          <p>execute the request</p>
+        </ul>
+      </p>
+      <p>Your function should look like so (your entity name will be different of course):
+        <pre>
+          <code>
+            use App\Entity\Book;
+            use Doctrine\Bundle\FixturesBundle\Fixture;
+            use Doctrine\Common\Persistence\ObjectManager;
+
+            class BookFixtures extends Fixture
+            {
+                public function load(ObjectManager $manager)
+                {
+                    $book = new Book();
+                    $book->setTitle('In cold blood');
+                    $book->setDescription('A deadly road trip...');
+                    $book->setAuthor('Truman Capote');
+
+                    $manager->persist($book);
+
+                    $manager->flush();
+                }
+            }
+
+          </code>
+        </pre>
+      </p>
+      <p>Notice that here you only created only 1 instance of your class. But you could use a <b>for loop</b> to create multiple objects the same way</p>
+      <p>Suppose you want to create 10 books, your function would look like this :
+        <pre>
+          <code>
+            public function load(ObjectManager $manager)
+            {
+              for ($i = 0; $i < 10; $i++)
+              {
+                $book = new Book();
+                $book->setTitle("Title book $i);
+                $book->setDescription("Description book $i");
+                $book->setAuthor("Author book $i");
+                $book->setImage("https://placehold.it/350x150")
+
+                $manager->persist($book);
+              }
+
+                $manager->flush();
+            }
+          </code>
+        </pre>
+      </p>
+      <p>This loop will create 10 instances of the Book class, set the fields values, persist the objects and write them to the database in just one script.</p>
+      <h4>Step #3</h4>
+      <p>You just have to execute your script now :
+        <pre>
+          <code>
+            php bin/console doctrine:fixtures:load
+          </code>
+        </pre>
+      </p>
+      <p>If you check in your table, you should find the newly created data !</p>
+      <section>
+        <h2>Next</h2>
+        <h3>Query your database and display data in your templates</h3>
+        <p>In the next episode, you will query your database and pass data to your templates
+        </p>
+        <p>That's where you will make use of the <b>Repositories</b></p>
+      </section>
+    <h1>#BeStrong #HopeThatHelps #<3</h1>
+  </body>
+</html>
